@@ -1,5 +1,8 @@
-package com.Prompt_lib.demo.Service;
+package com.Prompt_lib.demo.Security;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +11,7 @@ import com.Prompt_lib.demo.Dto.UserResponseDto;
 import com.Prompt_lib.demo.Entity.UserEntity;
 import com.Prompt_lib.demo.Mapper.PromptMapper;
 import com.Prompt_lib.demo.Repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,6 +21,8 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepo;
     private final PromptMapper promptMapper;
+    private final AuthenticationManager auth;
+    private final JwtService jwtService;
 
     public UserResponseDto RegisteredUser(UserRequestDto userRequestDto) {
 
@@ -32,6 +38,24 @@ public class UserService {
         UserResponseDto responseDto = promptMapper.userEntityToResponseDto(newUser);
         return responseDto;
 
+    }
+
+    public UserResponseDto login(UserRequestDto userRequestDto){
+
+        auth.authenticate(
+            new UsernamePasswordAuthenticationToken(userRequestDto.getUsername(),userRequestDto.getPassword())
+        );
+
+        UserEntity user = userRepo.findByUsername(userRequestDto.getUsername()).orElseThrow(
+            ()-> new UsernameNotFoundException("User Not found in database")
+        );
+
+        String token = jwtService.generateAcssesToken(user);
+        UserResponseDto responseDto = promptMapper.userEntityToResponseDto(user);
+        responseDto.setJwtToken(token);
+        return responseDto;
+        
+        
     }
 
 }

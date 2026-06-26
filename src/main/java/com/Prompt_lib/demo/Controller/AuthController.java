@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Prompt_lib.demo.Dto.UserRequestDto;
 import com.Prompt_lib.demo.Dto.UserResponseDto;
-import com.Prompt_lib.demo.Service.UserService;
+import com.Prompt_lib.demo.Security.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,4 +26,11 @@ public class AuthController {
         UserResponseDto registerUsers = userService.RegisteredUser(user); 
         return ResponseEntity.status(HttpStatus.CREATED).body(registerUsers);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody UserRequestDto loginRequestDto) {
+        UserResponseDto loginUser = userService.login(loginRequestDto);
+        return ResponseEntity.ok(loginUser);
+    }
+    
 }

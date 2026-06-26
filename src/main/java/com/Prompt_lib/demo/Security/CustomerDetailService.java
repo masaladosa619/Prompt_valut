@@ -1,4 +1,4 @@
-package com.Prompt_lib.demo.Service;
+package com.Prompt_lib.demo.Security;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
