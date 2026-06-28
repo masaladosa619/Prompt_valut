@@ -5,12 +5,9 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -18,14 +15,16 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
-
+    private final Oauth2Handler oauth2Handler;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -40,11 +39,19 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/api/prompts/**").hasAnyRole("ADMIN","DEVELOPER")
                     .requestMatchers(HttpMethod.PUT, "/api/prompts/**").hasAnyRole("ADMIN","DEVELOPER")
                     .requestMatchers(HttpMethod.DELETE, "/api/prompts/**").hasRole("ADMIN")
-                    .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/api/auth/**","/error").permitAll()
                     .anyRequest().authenticated())
                     .addFilterBefore(
                         jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(Customizer.withDefaults());
+                        .oauth2Login(oAuth2-> oAuth2
+                            .failureHandler(
+                            (request, response, exception) -> {
+                                log.error("oAuth2 error : {}", exception.getMessage());
+                            })
+                            .successHandler(oauth2Handler)
+                        )
+                        .httpBasic(Customizer.withDefaults());
+                
         return http.build();
     }
 
@@ -77,10 +84,7 @@ public class SecurityConfig {
         return source;
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 
     // @Bean
     // public UserDetailsService userDetailsService(BCryptPasswordEncoder passwordEncoder) {
@@ -98,10 +102,6 @@ public class SecurityConfig {
     //     return new InMemoryUserDetailsManager(user1, user2);
     // }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
+   
     
 }

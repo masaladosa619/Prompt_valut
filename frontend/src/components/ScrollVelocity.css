@@ -1,0 +1,51 @@
+.parallax {
+  width: 100%;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  width: 100%;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  position: relative;
+  overflow: hidden;
+}
+
+.scroller {
+  display: flex;
+  white-space: nowrap;
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 2.25rem;
+  font-weight: bold;
+  letter-spacing: -0.02em;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
+  color: var(--text-primary);
+}
+
+.scroller span {
+  flex-shrink: 0;
+  margin-right: 2rem;
+}
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .scroller {
+    font-size: 5rem;
+    line-height: 5rem;
+  }
+}
+
+/* Tech marquee spacing */
+span.tech-marquee {
+  margin-right: 2rem;
+}
+.tech-marquee {
+  color: var(--text-primary);
+}
+.tech-marquee + .scroller span { margin-right: 2rem; }

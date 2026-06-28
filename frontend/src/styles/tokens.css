@@ -1,0 +1,42 @@
+/* Design Tokens for Prompt Vault redesign */
+:root {
+  /* Background colors */
+  --bg-body: #0A0C10;            /* main background */
+  --bg-sidebar: #0D1015;         /* sidebar */
+  --bg-card: #11151C;            /* cards and panels */
+  --bg-elevated: rgba(22, 22, 28, 0.95); /* keep for elevated overlays */
+
+  /* Border colors */
+  --border-default: #23262D;    /* thin border */
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  /* Accent palette */
+  --accent-primary: #34D399;     /* emerald */
+  --accent-blue: #4F8CFF;        /* blue */
+  --accent-purple: #8B5CF6;      /* purple */
+  --accent-orange: #F59E0B;      /* orange */
+  --accent-danger: #EF4444;      /* danger */
+
+  /* Primary accent used throughout the UI */
+  --accent: var(--accent-primary);
+  --accent-dim: rgba(52, 211, 153, 0.12);
+  --accent-glow: rgba(52, 211, 153, 0.35);
+
+  /* Text colors */
+  --text-primary: #F4F4F5;
+  --text-secondary: #A1A1AA;
+
+  /* Radii & shadows */
+  --radius-sm: 6px; /* keep small for tiny elements */
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius);
+
+  --radius: 20px;               /* large border radius */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.25);
+
+  /* Transitions */
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}

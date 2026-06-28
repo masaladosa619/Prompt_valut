@@ -1,0 +1,7 @@
+/* Layout wrapper for dashboard */
+.dash-main {
+  padding: 24px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}

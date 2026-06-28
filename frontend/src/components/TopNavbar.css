@@ -1,0 +1,67 @@
+/* Top navigation bar */
+.dash-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 72px;
+  background: rgba(7, 7, 9, 0.6);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.dash-topbar .eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.dash-topbar h2 {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  background: rgba(0,0,0,0.2);
+  color: var(--text-secondary);
+}
+
+.search-bar input {
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--text-primary);
+  width: 200px;
+}
+
+.icon-btn {
+  all: unset;
+  cursor: pointer;
+  color: var(--text-primary);
+  padding: 4px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition);
+}
+
+.icon-btn:hover {
+  background: rgba(255,255,255,0.08);
+}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Loader2, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Loader2, ShieldCheck, Eye, EyeOff } from "lucide-react";
+import "./LoginPage.css";
 import { login, persistAuth, register } from "../api/client.js";
 
 export default function LoginPage({ onAuth, addToast }) {
@@ -8,6 +9,7 @@ export default function LoginPage({ onAuth, addToast }) {
   const [mode, setMode] = useState("login"); // "login" | "register"
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [roles, setRoles] = useState("ROLE_DEVELOPER");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -103,13 +105,34 @@ export default function LoginPage({ onAuth, addToast }) {
 
           <div className="form-group">
             <label htmlFor="auth-password">Password</label>
-            <input
-              id="auth-password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-            />
+            <div className="password-input-wrapper" style={{ position: 'relative' }}>
+              <input
+                id="auth-password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                style={{ paddingRight: '2.5rem' }}
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '0.5rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  color: 'var(--text-secondary)',
+                }}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           {mode === "register" && (

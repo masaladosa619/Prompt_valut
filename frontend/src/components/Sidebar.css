@@ -1,0 +1,45 @@
+/* Sidebar component styles */
+.dash-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 16px;
+  border-right: 1px solid var(--border-subtle);
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  transition: transform var(--transition);
+  transform: translateX(0);
+  z-index: 100;
+}
+
+/* Mobile drawer – hidden by default, slide in when .open */
+@media (max-width: 960px) {
+  .dash-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-md);
+  }
+  .dash-sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Hamburger button */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  padding: 8px;
+}
+@media (max-width: 960px) {
+  .nav-toggle { display: block; }
+}

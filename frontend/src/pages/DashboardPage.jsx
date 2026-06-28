@@ -34,6 +34,8 @@ import {
 
 const emptyForm = { title: "", llmModel: "", content: "" };
 
+import DashboardLayout from '../components/DashboardLayout.jsx';
+
 export default function DashboardPage({ user, setUser, addToast }) {
   const navigate = useNavigate();
   const isAuth = !!user && !!getToken();
@@ -265,89 +267,14 @@ export default function DashboardPage({ user, setUser, addToast }) {
      ═══════════════════════════════════════════════════════════ */
 
   return (
-    <div className="dashboard-shell">
+    <DashboardLayout user={user}>
       {/* ── Sidebar ──────────────────────────────────────── */}
-      <aside className="dash-sidebar">
-        <Link to="/" className="dash-brand">
-          <div className="dash-brand-icon"><ShieldCheck size={20} /></div>
-          <div>
-            <h1>Prompt Vault</h1>
-            <p>Enterprise Gateway</p>
-          </div>
-        </Link>
-
-        <nav className="dash-nav">
-          <span className="dash-nav-label">Main</span>
-          {[
-            { key: "library", label: "Library", icon: Library },
-            { key: "gateway", label: "AI Gateway", icon: Bot },
-            { key: "ratelimit", label: "Rate Limiting", icon: Clock },
-          ].map(({ key, label, icon: Icon }) => (
-            <button
-              key={key}
-              className={`dash-nav-item ${activePage === key ? "active" : ""}`}
-              onClick={() => setActivePage(key)}
-            >
-              <Icon size={17} /> {label}
-            </button>
-          ))}
-
-          <span className="dash-nav-label">Security</span>
-          {[
-            { key: "security", label: "RBAC & Auth", icon: KeyRound },
-            { key: "audit", label: "Audit Logs", icon: Database },
-          ].map(({ key, label, icon: Icon }) => (
-            <button
-              key={key}
-              className={`dash-nav-item ${activePage === key ? "active" : ""}`}
-              onClick={() => setActivePage(key)}
-            >
-              <Icon size={17} /> {label}
-            </button>
-          ))}
-        </nav>
-
-        {/* User Badge */}
-        {isAuth && user ? (
-          <div className="dash-user">
-            <div className="dash-user-avatar">{user.username?.[0]?.toUpperCase() || "U"}</div>
-            <div className="dash-user-info">
-              <strong>{user.username}</strong>
-              <small>{user.roles}</small>
-            </div>
-            <button className="dash-logout" onClick={handleLogout} title="Sign out">
-              <LogOut size={16} />
-            </button>
-          </div>
-        ) : (
-          <div className="dash-user">
-            <div className="dash-user-avatar" style={{ background: "rgba(255,255,255,0.06)", color: "#71717a" }}>?</div>
-            <div className="dash-user-info">
-              <strong style={{ color: "#71717a" }}>Not signed in</strong>
-              <small>
-                <Link to="/login" className="lock-badge" style={{ marginTop: 4, display: "inline-flex" }}>
-                  <Lock size={12} /> Sign In
-                </Link>
-              </small>
-            </div>
-          </div>
-        )}
-      </aside>
-
+      
       {/* ── Main ─────────────────────────────────────────── */}
       <main className="dash-main">
         {activePage === "library" ? (
           <>
-            <div className="dash-topbar">
-              <div>
-                <p className="eyebrow">Prompt Management</p>
-                <h2>Prompt Vault</h2>
-              </div>
-              <button className="btn btn-primary" onClick={startCreate}>
-                <Plus size={17} /> New Prompt
-              </button>
-            </div>
-
+            
             <div className="dash-grid">
               {/* ── Left: Prompt Library ───────────────── */}
               <div className="card">
@@ -387,7 +314,6 @@ export default function DashboardPage({ user, setUser, addToast }) {
                           <span className="prompt-row-title">{p.title}</span>
                           <span className="model-badge">{p.llmModel}</span>
                         </div>
-                        <em className="prompt-row-id">#{p.id}</em>
                       </button>
                     ))
                   ) : (
@@ -546,6 +472,6 @@ export default function DashboardPage({ user, setUser, addToast }) {
           </div>
         )}
       </main>
-    </div>
+    </DashboardLayout>
   );
 }

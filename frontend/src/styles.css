@@ -306,6 +306,8 @@ ul, ol {
 
 .landing-page {
   padding-top: 72px;
+  position: relative;
+  overflow: hidden;
 }
 
 /* ── Hero Section ──────────────────────────────────────────────────── */
@@ -739,6 +741,19 @@ ul, ol {
   overflow: hidden;
 }
 
+/* When step-card is inside BorderGlow, remove its own border/bg */
+.border-glow-card .step-card {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.border-glow-card .step-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .step-card::before {
   content: "";
   position: absolute;
@@ -1166,7 +1181,7 @@ ul, ol {
   gap: 24px;
   padding: 24px 16px;
   border-right: 1px solid var(--border-subtle);
-  background: rgba(8, 8, 10, 0.8);
+  background: var(--bg-sidebar);
   backdrop-filter: blur(20px);
   position: sticky;
   top: 0;
@@ -1322,10 +1337,22 @@ ul, ol {
 /* ── Dashboard Main ────────────────────────────────────────────────── */
 
 .dash-main {
+  position: relative;
   min-width: 0;
   padding: 28px;
   display: flex;
   flex-direction: column;
+}
+
+.dash-main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #1D9E75, #5227FF);
+  z-index: 1;
 }
 
 .dash-topbar {
@@ -1366,7 +1393,7 @@ ul, ol {
 .card {
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
-  background: var(--bg-surface);
+  background: var(--bg-card);
   backdrop-filter: blur(12px);
   box-shadow: var(--shadow-card);
   transition: border-color 0.3s ease;
@@ -1867,11 +1894,97 @@ ul, ol {
   .features-grid { grid-template-columns: 1fr; }
   .footer { padding: 32px 24px; }
   .footer-inner { flex-direction: column; text-align: center; }
-  .dash-main { padding: 20px 16px; }
+  .dash-main {
+    position: relative;
+    padding: 20px 16px;
+  }
 }
 
 @media (max-width: 480px) {
   .hero h1 { font-size: 44px; }
   .navbar { padding: 0 16px; }
   .auth-card { padding: 28px 22px; }
+}
+
+/* Dashboard custom styles */
+.dash-grid > .card:first-child {
+  border-left: 3px solid #1D9E75;
+}
+
+/* Prompt list item hover */
+.prompt-row:hover {
+  border-left-color: #1D9E75;
+}
+
+/* Search box */
+.search-box {
+  border-radius: var(--radius-lg);
+}
+.search-box:focus-within {
+  box-shadow: 0 0 6px 2px rgba(29,158,117,0.5);
+}
+
+/* Model badge colors */
+.model-badge {
+  background: rgba(99,102,241,0.12);
+  color: #a5b4fc;
+}
+/* Note: :contains selector may not be supported in all browsers */
+.model-badge:contains("Gemini") {
+  background: rgba(138,92,255,0.12);
+  color: #d0bfff;
+}
+.model-badge:contains("GPT") {
+  background: rgba(29,158,117,0.12);
+  color: #a5ffd1;
+}
+.model-badge:contains("Claude") {
+  background: rgba(255,165,0,0.12);
+  color: #ffddaa;
+}
+
+/* Pagination active button */
+.pagination button.active {
+  background: #1D9E75;
+  color: #fff;
+  border-color: #1D9E75;
+}
+
+/* New Prompt button shimmer */
+.dash-topbar .btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+.dash-topbar .btn-primary::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 2s ease-out;
+}
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Right panel empty state */
+.empty-state {
+  border: 1px dashed var(--border-subtle);
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  color: var(--text-muted);
+}
+.empty-state::before {
+  content: "🗂️";
+  font-size: 24px;
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  padding: 0 6px;
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Prompt_lib.demo.Dto.UserRequestDto;
 import com.Prompt_lib.demo.Dto.UserResponseDto;
-import com.Prompt_lib.demo.Security.UserService;
+import com.Prompt_lib.demo.Security.AuthService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/auth")
 public class AuthController {
     
-    private final UserService userService;
+    private final AuthService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody @Valid UserRequestDto user) {
-        UserResponseDto registerUsers = userService.RegisteredUser(user); 
+    public ResponseEntity<?> signup(@RequestBody @Valid UserRequestDto user) {
+        UserResponseDto registerUsers = userService.signup(user); 
         return ResponseEntity.status(HttpStatus.CREATED).body(registerUsers);
     }
 

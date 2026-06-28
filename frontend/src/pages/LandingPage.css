@@ -1,0 +1,113 @@
+/* Landing page specific styles */
+
+/* Top‑left site header */
+.site-header {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.brand-logo {
+  width: 2rem;
+  height: auto;
+}
+.brand-name {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+}
+.brand-check {
+  color: #00c853;
+}
+html { scroll-behavior: smooth; }
+
+/* Tech scroll styling */
+.tech-scroll {
+  color: var(--text-primary);
+  margin-right: 4rem;
+}
+
+/* tech item styling */
+.tech-item {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 1.5rem;
+}
+.tech-logo {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-right: 0.3rem;
+}
+
+
+/* Large shiny title */
+.large-shiny {
+  font-size: clamp(64px, 9vw, 100px);
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+
+/* Ensure heading pills stay static above typing text */
+.marquee-header .section-badge,
+.section .section-badge {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+
+.landing-page {
+
+  position: relative;
+  overflow: hidden;
+}
+
+.dot-grid-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+/* Built‑with wrapper and logo row */
+.built-with-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.logo-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 0.3rem;
+}
+
+/* individual logo + text item */
+.logo-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem; /* space between icon and its label */
+}
+.logo-text {
+  font-size: 0.95rem; /* slightly smaller than default */
+  color: var(--text-primary);
+}
+
+/* marquee item styling */
+.tech-marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: 2rem; /* spacing between repeated items */
+}
+
+.tech-logo {
+  width: 1.6rem;
+  height: 1.6rem;
+  object-fit: contain;
+}
