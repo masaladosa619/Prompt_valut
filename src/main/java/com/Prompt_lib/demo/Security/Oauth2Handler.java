@@ -39,7 +39,7 @@ public class Oauth2Handler implements AuthenticationSuccessHandler {
         String registrationId = token.getAuthorizedClientRegistrationId();
         ResponseEntity<UserResponseDto> loginresponse = authService.handleOauth2LoginRequest(user, registrationId);
 
-        String frontendCallback = "http://localhost:5173/oauth2/callback";
+        String frontendCallback = "https://prompt-valut-eta.vercel.app/oauth2/callback";
         UserResponseDto body = loginresponse.getBody();
         String redirectUrl = frontendCallback + "?token=" + body.getJwtToken()
                 + "&user=" + URLEncoder.encode(objectMapper.writeValueAsString(body), StandardCharsets.UTF_8);

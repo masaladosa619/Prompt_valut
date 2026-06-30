@@ -2,7 +2,7 @@
    Prompt Vault — API Client (Fetch-based)
    ═══════════════════════════════════════════════════════════════ */
 
-const BASE = "http://localhost:8080/api";
+const BASE = "https://promptvalut-production.up.railway.app/api";
 
 /**
  * Read JWT token from localStorage.
@@ -52,7 +52,7 @@ export function clearAuth() {
  * Note: Backend returns JSON directly, so this is a best-effort attempt.
  */
 export function loginWithOAuth2(provider) {
-  const OAUTH2_BASE = "http://localhost:8080/oauth2/authorization";
+  const OAUTH2_BASE = "https://promptvalut-production.up.railway.app/oauth2/authorization";
   const width = 500;
   const height = 600;
   const left = window.screenX + (window.outerWidth - width) / 2;
