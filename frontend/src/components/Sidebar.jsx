@@ -1,31 +1,33 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link, useLocation } from 'react-router-dom';
-import { ShieldCheck, Library, Bot, Database, Settings, Menu, LogOut } from 'lucide-react';
+import { ShieldCheck, Library, Bot, Settings, Menu, LogOut, GitBranch, Users, Globe } from 'lucide-react';
 import { clearAuth } from '../api/client.js';
 import './Sidebar.css';
 
 // Navigation items definition – easy to extend
 const navItems = [
-  // Keep only Library (the main prompt view) and AI Gateway
-  { key: 'library', label: 'Library', icon: Library, path: '/' },
-  { key: 'gateway', label: 'AI Gateway', icon: Bot, path: '/gateway' },
+  { key: 'dashboard', label: 'Dashboard', icon: Library, path: '/dashboard' },
+  { key: 'community', label: 'Community', icon: Globe, path: '/community' },
+  { key: 'gateway', label: 'AI Gateway', icon: Bot, path: '/gateway', comingSoon: true },
+  { key: 'workflows', label: 'Workflows', icon: GitBranch, path: '/workflows', comingSoon: true },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ user, setUser }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDrawer = () => setIsOpen(!isOpen);
 
-  const renderNavItem = ({ key, label, icon: Icon, path }) => (
+  const renderNavItem = ({ key, label, icon: Icon, path, comingSoon }) => (
     <Link
       key={key}
       to={path}
       className={`dash-nav-item ${location.pathname === path ? 'active' : ''}`}
     >
       <Icon size={17} /> {label}
+      {comingSoon && <span className="coming-soon-badge">Coming Soon</span>}
     </Link>
   );
 
@@ -38,7 +40,6 @@ export default function Sidebar() {
 
       {/* Brand */}
       <Link to="/" className="dash-brand">
-        <div className="dash-brand-icon"><ShieldCheck size={20} /></div>
         <div>
           <h1>Prompt Vault</h1>
           <p>Enterprise Gateway</p>
@@ -50,15 +51,21 @@ export default function Sidebar() {
         {navItems.map(renderNavItem)}
       </nav>
 
-      {/* User badge – placeholder, actual data comes from App state */}
+      {/* User badge – from actual user data */}
       <div className="dash-user">
-        <div className="dash-user-avatar">U</div>
+        <div className="dash-user-avatar">
+          {user?.username?.[0]?.toUpperCase() || "U"}
+        </div>
         <div className="dash-user-info">
-          <strong>Demo User</strong>
-          <small>ROLE_DEVELOPER</small>
+          <strong>{user?.username || "User"}</strong>
+          <small>{user?.roles?.includes("ROLE_ADMIN") ? "Admin" : "Developer"}</small>
         </div>
         {/* Logout button – clears auth and redirects to login */}
-        <button className="dash-logout" aria-label="Sign out" onClick={() => { clearAuth(); navigate('/login'); }}>
+        <button className="dash-logout" aria-label="Sign out" onClick={() => {
+          clearAuth();
+          if (setUser) setUser(null);
+          navigate('/login');
+        }}>
           <LogOut size={16} />
         </button>
       </div>

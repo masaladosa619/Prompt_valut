@@ -11,4 +11,5 @@ public class PromptResponseDto {
     private String title;
     private String content;
     private String llmModel;
+    private boolean publiclyShared;
 }

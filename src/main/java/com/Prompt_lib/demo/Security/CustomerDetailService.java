@@ -22,9 +22,12 @@ public class CustomerDetailService implements UserDetailsService{
         UserEntity user = userRepo.findByUsername(username).orElseThrow(
             ()-> new UsernameNotFoundException("User Not found in database")
         );
+
+        String password = user.getPassword() != null ? user.getPassword() : "OAUTH2_PASSWORD";
+        
         String [] roles = user.getRoles().split(",");
         UserDetails userDetails= User.withUsername(user.getUsername())
-        .password(user.getPassword())
+        .password(password)
         .authorities(roles)
         .build();
         

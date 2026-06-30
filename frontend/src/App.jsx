@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { BrowserRouter, Link, Route, Routes, useLocation } from "react-router-dom";
 import {
   AlertTriangle,
@@ -14,6 +14,9 @@ import { getStoredUser } from "./api/client.js";
 import LandingPage from "./pages/LandingPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
+import OAuth2CallbackPage from "./pages/OAuth2CallbackPage.jsx";
+import CommunityPage from "./pages/CommunityPage.jsx";
+import ClickSpark from "./components/ClickSpark.jsx";
 
 /* ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
    Toast System
@@ -98,7 +101,7 @@ function Navbar({ user }) {
         ) : (
           <>
             <Link to="/login" className="btn btn-ghost btn-sm ripple">Sign In</Link>
-            <Link to="/login" className="btn btn-outline btn-sm ripple">Get Started</Link>
+            <Link to="/login?mode=register" className="btn btn-outline btn-sm ripple">Get Started</Link>
           </>
         )}
       </div>
@@ -114,18 +117,46 @@ export default function App() {
   const [user, setUser] = useState(() => getStoredUser());
   const { toasts, addToast, dismiss } = useToasts();
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("expired") === "true") {
+      addToast("warning", "Session Expired", "Session over as Jwt token has expired");
+      // Remove "?expired=true" from the URL bar without reloading the page
+      const cleanUrl = window.location.pathname + window.location.search.replace(/[?&]expired=true/, '').replace(/^&/, '?');
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  }, [addToast]);
+
   return (
-    <BrowserRouter>
-      <ToastContainer toasts={toasts} onDismiss={dismiss} />
-      <Navbar user={user} />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage onAuth={setUser} addToast={addToast} />} />
-        <Route
-          path="/dashboard"
-          element={<DashboardPage user={user} setUser={setUser} addToast={addToast} />}
-        />
-      </Routes>
-    </BrowserRouter>
+    <ClickSpark
+      sparkColor="#4be1af"
+      sparkSize={12}
+      sparkRadius={20}
+      sparkCount={8}
+      duration={400}
+    >
+      <BrowserRouter>
+        <ToastContainer toasts={toasts} onDismiss={dismiss} />
+        <Navbar user={user} />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage onAuth={setUser} addToast={addToast} />} />
+          <Route path="/oauth2/callback" element={<OAuth2CallbackPage />} />
+          <Route path="/community" element={<CommunityPage user={user} addToast={addToast} setUser={setUser} />} />
+          <Route
+            path="/dashboard"
+            element={<DashboardPage user={user} setUser={setUser} addToast={addToast} initialPage="library" />}
+          />
+          <Route
+            path="/gateway"
+            element={<DashboardPage user={user} setUser={setUser} addToast={addToast} initialPage="gateway" />}
+          />
+          <Route
+            path="/workflows"
+            element={<DashboardPage user={user} setUser={setUser} addToast={addToast} initialPage="workflows" />}
+          />
+        </Routes>
+      </BrowserRouter>
+    </ClickSpark>
   );
 }

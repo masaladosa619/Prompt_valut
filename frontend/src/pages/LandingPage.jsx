@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   Sparkles,
   Zap,
+  Globe,
 } from "lucide-react";
 import ShinyText from "../components/ShinyText";
 import LightRays from "../components/LightRays";
@@ -22,6 +23,7 @@ import TextType from "../components/TextType";
 import LogoLoop from "../components/LogoLoop";
 import BorderGlow from "../components/BorderGlow";
 import CurvedLoop from "../components/CurvedLoop";
+import GlareHover from "../components/GlareHover";
 // Tech logos
 import SpringLogo from "../../assests/logos/spring-boot.svg";
 import PostgresLogo from "../../assests/logos/postgresql.svg";
@@ -106,71 +108,74 @@ export default function LandingPage() {
 
   return (
     <div className="landing-page">
-  <div className="light-rays-wrapper" style={{ width: '100%', height: '600px', position: 'absolute', top: 72, left: 0, zIndex: 0, pointerEvents: 'none' }}>
-    <LightRays
-      raysOrigin="top-center"
-      raysColor="#00ffff"
-      raysSpeed={1.5}
-      lightSpread={0.8}
-      rayLength={1.2}
-      followMouse={true}
-      mouseInfluence={0.1}
-      noiseAmount={0.1}
-      distortion={0.05}
-      className="custom-rays"
-    />
-  </div>
+      <div className="light-rays-wrapper" style={{ width: '100%', height: '600px', position: 'absolute', top: 72, left: 0, zIndex: 0, pointerEvents: 'none' }}>
+        <LightRays
+          raysOrigin="top-center"
+          raysColor="#00ffff"
+          raysSpeed={1.5}
+          lightSpread={0.8}
+          rayLength={1.2}
+          followMouse={true}
+          mouseInfluence={0.1}
+          noiseAmount={0.1}
+          distortion={0.05}
+          className="custom-rays"
+        />
+      </div>
       <section className="hero" style={{ position: 'relative', zIndex: 1 }}>
         <ShinyText text="Prompt Vault" className="large-shiny" />
         <p className="hero-subtitle">
           Enterprise Prompt Gateway &amp; Management System for modern LLM operations.
         </p>
 
-        {/* Live Demo Cards */}
-        <div className="hero-demo">
-          <div className="demo-section-label"><span className="dot" />
-            Active Prompts (2)
-          </div>
-
-          <div className="demo-card">
-            <span className="severity-badge gpt4">GPT-4</span>
-            <div className="demo-card-content">
-              <h4>Support Ticket Summarizer</h4>
-              <div className="demo-card-meta">
-                <span>enterprise-ops</span>
-                <span>·</span>
-                <span>2m ago</span>
-                <span className="status">✦ Production ready</span>
-              </div>
+        {/* Code Terminal Mockup */}
+        <div className="terminal-mockup">
+          <div className="terminal-header">
+            <div className="terminal-buttons">
+              <span className="terminal-btn close" />
+              <span className="terminal-btn minimize" />
+              <span className="terminal-btn expand" />
             </div>
-            <span className="demo-card-arrow"><ArrowRight size={16} /></span>
+            <div className="terminal-title">prompt_config.json</div>
           </div>
-
-          <div className="demo-section-label orange"><span className="dot" />
-            Recently Created (1)
+          <div className="terminal-body">
+            <pre>
+              <code>
+                {"{\n"}
+                {"  "}
+                <span className="terminal-keyword">"name"</span>:{" "}
+                <span className="terminal-string">"Security Analyzer"</span>,
+                {"\n  "}
+                <span className="terminal-keyword">"system_instruction"</span>:{" "}
+                <span className="terminal-string">
+                  "You are a senior security researcher."
+                </span>,
+                {"\n  "}
+                <span className="terminal-keyword">"template"</span>:{" "}
+                <span className="terminal-string">
+                  "Analyze the following function for vulnerabilities:{" "}
+                  <span className="terminal-variable">{"{"}code{"}"}</span>"
+                </span>,
+                {"\n  "}
+                <span className="terminal-keyword">"parameters"</span>: {"{\n"}
+                {"    "}
+                <span className="terminal-keyword">"temperature"</span>:{" "}
+                <span className="terminal-number">0.2</span>,
+                {"\n    "}
+                <span className="terminal-keyword">"model"</span>:{" "}
+                <span className="terminal-string">"gpt-4o"</span>
+                {"\n  }\n"}
+                {"}"}
+              </code>
+            </pre>
           </div>
-
-          <div className="demo-card">
-            <span className="severity-badge gemini">Gemini</span>
-            <div className="demo-card-content">
-              <h4>Code Review Assistant</h4>
-              <div className="demo-card-meta">
-                <span>dev-tools</span>
-                <span>·</span>
-                <span>5h ago</span>
-                <span className="status">✦ Under review</span>
-              </div>
-            </div>
-            <span className="demo-card-arrow"><ArrowRight size={16} /></span>
-          </div>
-
         </div>
-          <div className="hero-cta" style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+          <div className="hero-cta" style={{ display: "flex", gap: "1rem", justifyContent: "center", marginTop: "2.5rem" }}>
           <Link to="/login" className="btn">
                         <span className="dot" style={{ width: 8, height: 8, borderRadius: "50%", background: "#4be1af" }} />Login
             <ArrowRight size={16} />
           </Link>
-          <Link to="/signup" className="btn">
+          <Link to="/login?mode=register" className="btn">
                         <span className="dot" style={{ width: 8, height: 8, borderRadius: "50%", background: "#4be1af" }} />Sign Up
             <ArrowRight size={16} />
           </Link>
@@ -210,11 +215,164 @@ export default function LandingPage() {
         ariaLabel="Technology partners"
       />
 
+      {/* ── Features Grid ───────────────────────────────────────────────────── */}
+      <section className="section section-center" id="features" style={{ paddingTop: 60 }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <TextType as="h2" text={["Core Features"]} style={{ marginBottom: 16 }} />
+          <p className="section-desc">
+            Three pillars to streamline your LLM operations — from prompt management to workflow automation.
+          </p>
+        </div>
+
+        <div className="features-grid">
+          {/* Feature 1: AI Gateway */}
+          <GlareHover
+            background="var(--bg-surface)"
+            borderColor="var(--border-default)"
+            borderRadius="var(--radius-lg)"
+            glareColor="#f472b6"
+            glareOpacity={0.18}
+            glareAngle={-30}
+            glareSize={280}
+            transitionDuration={700}
+          >
+            <div className="feature-card" style={{
+              position: "relative",
+              border: "1px solid var(--border-default)",
+              borderRadius: "var(--radius-lg)",
+              background: "var(--bg-surface)",
+              padding: "32px 28px",
+              transition: "all 0.35s ease",
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}>
+              <div className="feature-icon" style={{
+                width: 56, height: 56, borderRadius: "var(--radius-md)",
+                display: "grid", placeItems: "center",
+                background: "rgba(244, 114, 182, 0.12)",
+                color: "var(--danger)",
+                border: "1px solid rgba(244, 114, 182, 0.25)",
+                marginBottom: 20
+              }}>
+                <Bot size={26} />
+              </div>
+              <span style={{
+                display: "inline-block", padding: "4px 12px", borderRadius: "var(--radius-full)",
+                fontSize: "11px", fontWeight: 700, textTransform: "uppercase",
+                background: "rgba(244, 114, 182, 0.15)", color: "var(--danger)",
+                border: "1px solid rgba(244, 114, 182, 0.25)", marginBottom: 12
+              }}>
+                Coming Soon
+              </span>
+              <h4 style={{ fontSize: "18px", fontWeight: 700, marginBottom: 10 }}>AI Gateway</h4>
+              <p style={{ fontSize: "14px", color: "var(--text-secondary)", lineHeight: 1.6 }}>
+                Unified API gateway to route requests across GPT, Gemini, Claude, Llama & custom models.
+                Rate limiting, fallbacks, and observability built-in.
+              </p>
+            </div>
+          </GlareHover>
+
+          {/* Feature 2: Community Prompts */}
+          <GlareHover
+            background="var(--bg-surface)"
+            borderColor="var(--border-default)"
+            borderRadius="var(--radius-lg)"
+            glareColor="#38bdf8"
+            glareOpacity={0.18}
+            glareAngle={-30}
+            glareSize={280}
+            transitionDuration={700}
+          >
+            <div className="feature-card" style={{
+              border: "1px solid var(--border-default)",
+              borderRadius: "var(--radius-lg)",
+              background: "var(--bg-surface)",
+              padding: "32px 28px",
+              transition: "all 0.35s ease",
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}>
+              <div className="feature-icon" style={{
+                width: 56, height: 56, borderRadius: "var(--radius-md)",
+                display: "grid", placeItems: "center",
+                background: "rgba(56, 189, 248, 0.12)",
+                color: "#38bdf8",
+                border: "1px solid rgba(56, 189, 248, 0.25)",
+                marginBottom: 20
+              }}>
+                <Globe size={26} />
+              </div>
+              <h4 style={{ fontSize: "18px", fontWeight: 700, marginBottom: 10 }}>Community Prompts</h4>
+              <p style={{ fontSize: "14px", color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 16 }}>
+                Share, discover, and collaborate on prompts. Fork public prompts directly
+                to your private library with a single click.
+              </p>
+              <ul style={{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.8, paddingLeft: 20 }}>
+                <li>Global prompts repository</li>
+                <li>One-click Forking to Vault</li>
+                <li>Copy-to-clipboard widgets</li>
+                <li>Administrator moderation</li>
+              </ul>
+            </div>
+          </GlareHover>
+
+          {/* Feature 3: Prompt Library */}
+        <GlareHover
+          background="var(--bg-surface)"
+          borderColor="var(--border-default)"
+          borderRadius="var(--radius-lg)"
+          glareColor="#4be1af"
+          glareOpacity={0.18}
+          glareAngle={-30}
+          glareSize={280}
+          transitionDuration={700}
+        >
+          <div className="feature-card" style={{
+            border: "1px solid var(--border-default)",
+            borderRadius: "var(--radius-lg)",
+            background: "var(--bg-surface)",
+            padding: "32px 28px",
+            transition: "all 0.35s ease",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}>
+            <div className="feature-icon" style={{
+              width: 56, height: 56, borderRadius: "var(--radius-md)",
+              display: "grid", placeItems: "center",
+              background: "var(--accent-dim)",
+              color: "var(--accent)",
+              border: "1px solid var(--accent-glow)",
+              marginBottom: 20
+            }}>
+              <KeyRound size={26} />
+            </div>
+            <h4 style={{ fontSize: "18px", fontWeight: 700, marginBottom: 10 }}>Prompt Library</h4>
+            <p style={{ fontSize: "14px", color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 16 }}>
+              Centralized prompt management with versioning, search, and role-based access.
+              Built for teams shipping LLM features.
+            </p>
+            <ul style={{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.8, paddingLeft: 20 }}>
+              <li>Create, edit, version prompts</li>
+              <li>Full-text search & model filters</li>
+              <li>RBAC: Developer / Admin roles</li>
+              <li>Copy-to-clipboard for quick use</li>
+            </ul>
+          </div>
+        </GlareHover>
+      </div>
+      </section>
+
       {/* ── Challenge / Marquee ───────────────────────────── */}
       <section className="marquee-section">
         <div className="marquee-header">
           <div style={{ display: "inline-flex" }}></div>
-          <TextType as="h2" text={["Prompt management is a mess"]} style={{ fontSize: "clamp(32px, 5vw, 56px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.05, margin: "20px 0 16px" }} />
+          <TextType as="h2" text={["Prompt management is a mess", "But we can fix that"]} style={{ fontSize: "clamp(32px, 5vw, 56px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.05, margin: "20px 0 16px" }} />
           <p style={{ fontSize: 16, color: "#a1a1aa", maxWidth: 600, margin: "0 auto", lineHeight: 1.6 }}>
             Teams scatter prompts across Notion docs, Slack threads, and local files. 
             Prompt Vault gives you a single source of truth with versioning, search, and access control.
@@ -235,11 +393,11 @@ export default function LandingPage() {
       </section>
 
       {/* ── How It Works (Steps) ──────────────────────────── */}
-      <section className="section section-center" id="how-it-works">
-        <TextType as="h2" id="prompt-stack" text={["Prompt Vault fits into your stack"]} />
+      <section className="section section-center" id="how-it-works" style={{ paddingBottom: "24px" }}>
+        <TextType as="h2" id="prompt-stack" text={["Prompt Vault fits into your stack", "To manage your LLM templates"]} />
         <p className="section-desc">
-          From prompt creation to production deployment — Prompt Vault manages the entire lifecycle with security, 
-          versioning, and team collaboration built in.
+          From prompt creation to production deployment — Prompt Vault manages the entire lifecycle with security,
+          versioning, and automation built in.
         </p>
 
         <div className="steps-grid">
@@ -255,9 +413,14 @@ export default function LandingPage() {
           >
             <div className="step-card">
               <span className="step-number">Step 01</span>
-              <div className="step-icon"><Code2 size={22} /></div>
-              <h4>Create</h4>
-              <p>Write and store reusable prompt templates for any LLM model. Add metadata, tags, and model targets.</p>
+              <div className="step-icon"><KeyRound size={22} /></div>
+              <h4>Create & Manage Prompts</h4>
+              <p>Write, version, and organize reusable prompt templates for any LLM model with metadata, tags, and model targets.</p>
+              <ul style={{marginTop: 12, fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.8, textAlign: "left"}}>
+                <li>Prompt CRUD with version history</li>
+                <li>Full-text search & model filters</li>
+                <li>Tags & categorization</li>
+              </ul>
             </div>
           </BorderGlow>
 
@@ -273,12 +436,12 @@ export default function LandingPage() {
           >
             <div className="step-card highlighted">
               <span className="step-number">Step 02</span>
-              <div className="step-icon"><Lock size={22} /></div>
-              <h4>Secure</h4>
-              <ul>
-                <li>JWT-based authentication</li>
-                <li>Role-based access control</li>
-                <li>Protected write operations</li>
+              <div className="step-icon"><Globe size={22} /></div>
+              <h4>Community & Collaboration</h4>
+              <ul style={{marginTop: 12, fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.8, paddingLeft: 20}}>
+                <li>Public prompts repository</li>
+                <li>One-click fork to private vault</li>
+                <li>Copy-to-clipboard widgets</li>
               </ul>
             </div>
           </BorderGlow>
@@ -296,11 +459,14 @@ export default function LandingPage() {
             <div className="step-card">
               <span className="step-number">Step 03</span>
               <div className="step-icon"><Search size={22} /></div>
-              <h4>Discover</h4>
-              <ul>
-                <li>Full-text search by title</li>
-                <li>Filter by LLM model</li>
-                <li>Paginated browsing</li>
+              <h4>Search & Discovery</h4>
+              <span style={{display: 'inline-block', padding: '4px 12px', borderRadius: 'var(--radius-full)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.25)', margin: '8px 0 12px'}}>
+                Core Feature
+              </span>
+              <ul style={{marginTop: 12, fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.8, paddingLeft: 20}}>
+                <li>Paginated, sortable listings</li>
+                <li>Filter by model, category, rating</li>
+                <li>Date range & verified prompts</li>
               </ul>
             </div>
           </BorderGlow>
@@ -317,21 +483,26 @@ export default function LandingPage() {
           >
             <div className="step-card">
               <span className="step-number">Step 04</span>
-              <div className="step-icon"><Zap size={22} /></div>
-              <h4>Deploy</h4>
-              <p>Route prompts through the API gateway to your LLM endpoints. Monitor usage and track performance.</p>
+              <div className="step-icon"><ShieldCheck size={22} /></div>
+              <h4>Security & Access Control</h4>
+              <p>JWT authentication with role-based access (Developer / Admin). Secure API endpoints with Spring Security.</p>
+              <ul style={{marginTop: 12, fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.8, paddingLeft: 20}}>
+                <li>OAuth2: Google & GitHub login</li>
+                <li>RBAC: Developer / Admin roles</li>
+                <li>User-scoped data isolation</li>
+              </ul>
             </div>
           </BorderGlow>
         </div>
         <p className="section-quote">
-          Most teams have great LLM capabilities but no standardized prompt management. Between writing a prompt 
+          Most teams have great LLM capabilities but no standardized prompt management. Between writing a prompt
           and deploying it, there's a gap of ad-hoc copy-pasting. That's where Prompt Vault lives.
         </p>
       </section>
 
 
       {/* ── FAQ ───────────────────────────────────────────── */}
-      <section className="section section-center">
+      <section className="section section-center" style={{ paddingTop: "24px" }}>
         <div id="faq"><CurvedLoop marqueeText="Frequently Asked Questions" /></div>
         <div className="faq-list">
           {faqs.map((faq, i) => (

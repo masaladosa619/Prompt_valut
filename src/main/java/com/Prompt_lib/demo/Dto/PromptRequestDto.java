@@ -22,5 +22,7 @@ public class PromptRequestDto {
     @NotBlank(message = "LlmModel cannot be blank")
     private String llmModel;
 
+    private boolean publiclyShared;
+
     
 }

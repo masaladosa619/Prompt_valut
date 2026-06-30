@@ -61,8 +61,8 @@ public class PromptController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePromptById(@PathVariable Long id,
             @RequestBody @Valid PromptRequestDto updatePrompt) {
-        promptService.updatePromptById(id, updatePrompt);
-        return ResponseEntity.ok("Prompt has been updated Successfully");
+        PromptResponseDto updatedprompt = promptService.updatePromptById(id, updatePrompt);
+        return ResponseEntity.ok(updatedprompt);
     }
 
     @GetMapping("/search")
@@ -70,6 +70,24 @@ public class PromptController {
             @RequestParam(required = false) String model) {
         List<PromptResponseDto> ResponseDtos = promptService.searchPromptByLlmModelAndTitle(title, model);
         return ResponseEntity.ok(ResponseDtos);
+    }
+
+    @GetMapping("/community")
+    public ResponseEntity<Page<PromptResponseDto>> getCommunityPrompts(
+            @RequestParam(defaultValue = "0", required = false) int pageNo,
+            @RequestParam(defaultValue = "5", required = false) int pageSize,
+            @RequestParam(defaultValue = "id", required = false) String sortBy,
+            @RequestParam( defaultValue = "asc", required = false) String sortDir) {
+        Page<PromptResponseDto> communityPrompts = promptService.getCommunityPrompts(pageNo, pageSize, sortBy, sortDir);
+        return ResponseEntity.ok(communityPrompts);
+    }
+
+    @GetMapping("/community/search")
+    public ResponseEntity<List<PromptResponseDto>> searchCommunityPrompts(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String model) {
+        List<PromptResponseDto> searchedPrompts = promptService.searchCommunityPrompts(title, model);
+        return ResponseEntity.ok(searchedPrompts);
     }
 
 }

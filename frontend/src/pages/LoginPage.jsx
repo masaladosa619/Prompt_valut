@@ -1,12 +1,22 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Loader2, ShieldCheck, Eye, EyeOff } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { ArrowLeft, Loader2, Eye, EyeOff, Github, Chrome } from "lucide-react";
 import "./LoginPage.css";
 import { login, persistAuth, register } from "../api/client.js";
 
+const OAUTH2_BASE = "http://localhost:8080/oauth2/authorization";
+
 export default function LoginPage({ onAuth, addToast }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [mode, setMode] = useState("login"); // "login" | "register"
+
+  // Read mode from URL query param
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const urlMode = params.get("mode");
+    if (urlMode === "register") setMode("register");
+  }, [location.search]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -17,7 +27,7 @@ export default function LoginPage({ onAuth, addToast }) {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!username.trim() || !password.trim()) {
-      setError("Email aur password dono required hain.");
+      setError("Email and password are both required.");
       return;
     }
     setError("");
@@ -26,7 +36,7 @@ export default function LoginPage({ onAuth, addToast }) {
     try {
       if (mode === "register") {
         await register({ username: username.trim(), password, roles });
-        addToast("success", "Account Created!", "Ab sign in karo with your credentials.");
+        addToast("success", "Account Created!", "Please sign in with your credentials.");
         setMode("login");
         setPassword("");
       } else {
@@ -50,26 +60,16 @@ export default function LoginPage({ onAuth, addToast }) {
     }
   }
 
+  function handleOAuth2(provider) {
+    // Redirect to backend OAuth2 endpoint
+    // Backend will complete OAuth2 and redirect back to frontend /oauth2/callback?token=...
+    window.location.href = `${OAUTH2_BASE}/${provider}`;
+  }
+
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <div
-            style={{
-              width: 52,
-              height: 52,
-              borderRadius: 12,
-              display: "grid",
-              placeItems: "center",
-              background: "rgba(75, 225, 175, 0.1)",
-              border: "1px solid rgba(75, 225, 175, 0.25)",
-              color: "#4be1af",
-              margin: "0 auto 16px",
-            }}
-          >
-            <ShieldCheck size={26} />
-          </div>
-        </div>
+
 
         <h2>{mode === "login" ? "Sign in to Prompt Vault" : "Create your account"}</h2>
         <p className="auth-subtitle">
@@ -89,6 +89,27 @@ export default function LoginPage({ onAuth, addToast }) {
             </>
           )}
         </p>
+
+        {/* OAuth buttons - work for BOTH login & signup */}
+        <div className="oauth-divider">
+          <span>or continue with</span>
+        </div>
+        <div className="oauth-buttons">
+          <a
+            className="btn btn-oauth btn-google"
+            href={`${OAUTH2_BASE}/google`}
+          >
+            <Chrome size={18} />
+            Google
+          </a>
+          <a
+            className="btn btn-oauth btn-github"
+            href={`${OAUTH2_BASE}/github`}
+          >
+            <Github size={18} />
+            GitHub
+          </a>
+        </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
@@ -135,15 +156,7 @@ export default function LoginPage({ onAuth, addToast }) {
             </div>
           </div>
 
-          {mode === "register" && (
-            <div className="form-group">
-              <label htmlFor="auth-role">Role</label>
-              <select id="auth-role" value={roles} onChange={(e) => setRoles(e.target.value)}>
-                <option value="ROLE_DEVELOPER">Developer</option>
-                <option value="ROLE_ADMIN">Admin</option>
-              </select>
-            </div>
-          )}
+
 
           {error && <p className="form-error">{error}</p>}
 

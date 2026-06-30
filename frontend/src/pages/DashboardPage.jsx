@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Bot,
   Check,
@@ -11,6 +11,7 @@ import {
   Edit3,
   Eye,
   KeyRound,
+  Layers,
   Library,
   Loader2,
   Lock,
@@ -32,17 +33,26 @@ import {
   updatePrompt,
 } from "../api/client.js";
 
-const emptyForm = { title: "", llmModel: "", content: "" };
+const emptyForm = { title: "", llmModel: "", content: "", publiclyShared: false };
 
 import DashboardLayout from '../components/DashboardLayout.jsx';
 
-export default function DashboardPage({ user, setUser, addToast }) {
+export default function DashboardPage({ user, setUser, addToast, initialPage = "library" }) {
+  const location = useLocation();
   const navigate = useNavigate();
   const isAuth = !!user && !!getToken();
   const isAdmin = user?.roles?.includes("ROLE_ADMIN");
 
   /* ── Nav & Page ──────────────────────────────────────────── */
-  const [activePage, setActivePage] = useState("library");
+  const [activePage, setActivePage] = useState(() => initialPage);
+
+  // Sync activePage with URL path
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === "/dashboard") setActivePage("library");
+    else if (path === "/gateway") setActivePage("gateway");
+    else if (path === "/workflows") setActivePage("workflows");
+  }, [location.pathname]);
 
   /* ── Prompts ─────────────────────────────────────────────── */
   const [prompts, setPrompts] = useState([]);
@@ -60,7 +70,10 @@ export default function DashboardPage({ user, setUser, addToast }) {
   const [isSearching, setIsSearching] = useState(false);
   const searchTimer = useRef(null);
 
-  /* ── Editor ──────────────────────────────────────────────── */
+  const [sortBy, setSortBy] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get("sort") || "id,desc";
+  });
   const [mode, setMode] = useState("view");
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
@@ -89,7 +102,7 @@ export default function DashboardPage({ user, setUser, addToast }) {
     async (page = pageNo, size = pageSize) => {
       setLoading(true);
       try {
-        const data = await fetchPrompts({ pageNo: page, pageSize: size });
+        const data = await fetchPrompts({ pageNo: page, pageSize: size, sortBy });
         setPrompts(data.content || []);
         setTotalPages(data.totalPages || 0);
         setTotalElements(data.totalElements || 0);
@@ -100,12 +113,23 @@ export default function DashboardPage({ user, setUser, addToast }) {
         setLoading(false);
       }
     },
-    [pageNo, pageSize, addToast]
+    [pageNo, pageSize, sortBy, addToast]
   );
 
   useEffect(() => {
     loadPrompts(0, pageSize);
-  }, [pageSize]);
+  }, [pageSize, sortBy]);
+
+  // Read URL params on mount
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const page = parseInt(params.get("page") || "0", 10);
+    const size = parseInt(params.get("size") || "5", 10);
+    const sort = params.get("sort") || "id,desc";
+    if (page !== pageNo) setPageNo(page);
+    if (size !== pageSize) setPageSize(size);
+    if (sort !== sortBy) setSortBy(sort);
+  }, []);
 
   /* ── Debounced Search ────────────────────────────────────── */
   useEffect(() => {
@@ -162,7 +186,7 @@ export default function DashboardPage({ user, setUser, addToast }) {
     if (!requireAuth("edit prompts")) return;
     setMode("edit");
     setEditingId(prompt.id);
-    setForm({ title: prompt.title, llmModel: prompt.llmModel, content: prompt.content });
+    setForm({ title: prompt.title, llmModel: prompt.llmModel, content: prompt.content, publiclyShared: prompt.publiclyShared });
     setFormErrors({});
   }
 
@@ -176,17 +200,18 @@ export default function DashboardPage({ user, setUser, addToast }) {
         title: form.title.trim(),
         llmModel: form.llmModel.trim(),
         content: form.content.trim(),
+        publiclyShared: form.publiclyShared,
       };
       if (editingId) {
         const updated = await updatePrompt(editingId, payload);
         setPrompts((prev) => prev.map((p) => (p.id === editingId ? updated : p)));
-        setSelectedId(updated.id);
+        setSelectedId(String(updated.id));
         addToast("success", "Prompt Updated", `"${updated.title}" saved.`);
       } else {
         const created = await createPrompt(payload);
         addToast("success", "Prompt Created", `"${created.title}" added.`);
         await loadPrompts(0, pageSize);
-        setSelectedId(created.id);
+        setSelectedId(String(created.id));
       }
       setMode("view");
       setForm(emptyForm);
@@ -243,6 +268,7 @@ export default function DashboardPage({ user, setUser, addToast }) {
   function goToPage(page) {
     if (page < 0 || page >= totalPages) return;
     setPageNo(page);
+    navigate(`/dashboard?page=${page}&size=${pageSize}&sort=${sortBy}`, { replace: true });
     loadPrompts(page, pageSize);
   }
 
@@ -267,7 +293,7 @@ export default function DashboardPage({ user, setUser, addToast }) {
      ═══════════════════════════════════════════════════════════ */
 
   return (
-    <DashboardLayout user={user}>
+    <DashboardLayout user={user} setUser={setUser}>
       {/* ── Sidebar ──────────────────────────────────────── */}
       
       {/* ── Main ─────────────────────────────────────────── */}
@@ -283,7 +309,12 @@ export default function DashboardPage({ user, setUser, addToast }) {
                     <p className="eyebrow">Vault</p>
                     <h3>Prompt Library</h3>
                   </div>
-                  <span className="count-pill">{totalElements}</span>
+                  <div className="header-actions">
+                    <span className="count-pill">{totalElements}</span>
+                    <button className="btn btn-primary" onClick={() => { setMode('create'); setSelectedId(null); }}>
+                      <Plus size={15} /> New Prompt
+                    </button>
+                  </div>
                 </div>
 
                 <div className="search-box">
@@ -294,6 +325,18 @@ export default function DashboardPage({ user, setUser, addToast }) {
                     placeholder="Search prompts by title..."
                   />
                   {(isSearching || (searchQuery && loading)) && <Loader2 className="spin" size={15} />}
+                  <select
+                    className="sort-select"
+                    value={sortBy}
+                    onChange={(e) => { setSortBy(e.target.value); setPageNo(0); }}
+                    style={{ marginLeft: "auto", minWidth: 180 }}
+                  >
+                    <option value="id,desc">Newest First</option>
+                    <option value="id,asc">Oldest First</option>
+                    <option value="title,asc">Title (A–Z)</option>
+                    <option value="title,desc">Title (Z–A)</option>
+                    <option value="llmModel,asc">Model (A–Z)</option>
+                  </select>
                 </div>
 
                 <div className="prompt-list">
@@ -323,7 +366,7 @@ export default function DashboardPage({ user, setUser, addToast }) {
                   )}
                 </div>
 
-                {!searchQuery.trim() && totalPages > 0 && (
+                {!searchQuery.trim() && totalElements > 0 && (
                   <div className="pagination">
                     <button disabled={pageNo === 0} onClick={() => goToPage(pageNo - 1)}>
                       <ChevronLeft size={14} />
@@ -335,7 +378,13 @@ export default function DashboardPage({ user, setUser, addToast }) {
                     <select
                       className="page-size-select"
                       value={pageSize}
-                      onChange={(e) => { setPageSize(Number(e.target.value)); setPageNo(0); }}
+                      onChange={(e) => {
+                        const newSize = Number(e.target.value);
+                        setPageSize(newSize);
+                        setPageNo(0);
+                        navigate(`/dashboard?page=0&size=${newSize}&sort=${sortBy}`, { replace: true });
+                        loadPrompts(0, newSize);
+                      }}
                     >
                       <option value={3}>3 / page</option>
                       <option value={5}>5 / page</option>
@@ -437,6 +486,19 @@ export default function DashboardPage({ user, setUser, addToast }) {
                       <textarea name="content" value={form.content} onChange={updateForm} placeholder="Write your system prompt here..." rows={7} />
                       {formErrors.content && <span className="form-error">{formErrors.content}</span>}
                     </div>
+                    <div className="form-group" style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
+                      <input
+                        type="checkbox"
+                        name="publiclyShared"
+                        id="publiclyShared"
+                        checked={form.publiclyShared}
+                        onChange={(e) => setForm(f => ({ ...f, publiclyShared: e.target.checked }))}
+                        style={{ width: "auto", cursor: "pointer" }}
+                      />
+                      <label htmlFor="publiclyShared" style={{ margin: 0, cursor: "pointer", fontSize: "0.95rem", color: "var(--text-secondary)" }}>
+                        Share with Community
+                      </label>
+                    </div>
                     <div style={{ display: "flex", gap: 10 }}>
                       <button className="btn btn-primary" type="submit" disabled={saving} style={{ flex: 1 }}>
                         {saving ? <Loader2 className="spin" size={17} /> : <Plus size={17} />}
@@ -459,12 +521,14 @@ export default function DashboardPage({ user, setUser, addToast }) {
           <div className="placeholder-page">
             <div className="placeholder-icon">
               {activePage === "gateway" && <Bot size={32} />}
+              {activePage === "workflows" && <Layers size={32} />}
               {activePage === "ratelimit" && <Clock size={32} />}
               {activePage === "security" && <Shield size={32} />}
               {activePage === "audit" && <Database size={32} />}
             </div>
             <h3>
               {activePage === "gateway" ? "AI Gateway" :
+               activePage === "workflows" ? "Workflows" :
                activePage === "ratelimit" ? "Rate Limiting" :
                activePage === "security" ? "Security & RBAC" : "Audit Logs"}
             </h3>

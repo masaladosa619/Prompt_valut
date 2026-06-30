@@ -37,7 +37,7 @@ public class AuthService {
         UserEntity newUser = new UserEntity();
         newUser.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
         newUser.setUsername(userRequestDto.getUsername());
-        newUser.setRoles(userRequestDto.getRoles());
+        newUser.setRoles("ROLE_DEVELOPER");
         userRepo.save(newUser);
 
         UserResponseDto responseDto = promptMapper.userEntityToResponseDto(newUser);
