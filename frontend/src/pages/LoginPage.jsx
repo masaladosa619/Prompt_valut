@@ -4,7 +4,7 @@ import { ArrowLeft, Loader2, Eye, EyeOff, Github, Chrome } from "lucide-react";
 import "./LoginPage.css";
 import { login, persistAuth, register } from "../api/client.js";
 
-const OAUTH2_BASE = "http://localhost:8080/oauth2/authorization";
+const OAUTH2_BASE = "https://promptvalut-production.up.railway.app/oauth2/authorization";
 
 export default function LoginPage({ onAuth, addToast }) {
   const navigate = useNavigate();
