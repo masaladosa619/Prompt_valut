@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Loader2, Eye, EyeOff, Github, Chrome } from "lucide-react";
+import { ArrowLeft, Loader2, Eye, EyeOff, Github } from "lucide-react";
 import "./LoginPage.css";
 import { login, persistAuth, register } from "../api/client.js";
 
@@ -96,15 +96,9 @@ export default function LoginPage({ onAuth, addToast }) {
         </div>
         <div className="oauth-buttons">
           <a
-            className="btn btn-oauth btn-google"
-            href={`${OAUTH2_BASE}/google`}
-          >
-            <Chrome size={18} />
-            Google
-          </a>
-          <a
             className="btn btn-oauth btn-github"
             href={`${OAUTH2_BASE}/github`}
+            style={{ width: "100%", justifyContent: "center" }}
           >
             <Github size={18} />
             GitHub
