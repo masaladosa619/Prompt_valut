@@ -27,7 +27,7 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final Oauth2Handler oauth2Handler;
 
-    @Value("${app.frontend.url:http://localhost:5173}")
+    @Value("${app.frontend.url:https://prompt-valut-rust.vercel.app}")
     private String frontendUrl;
 
     
